@@ -1,5 +1,5 @@
 // Created by: Mikey Gloriani
-// Created on: Oct 2022
+// Created on: Jan 2023
 // This file contains the JS functions for index.html
 
 "use strict"
@@ -8,14 +8,45 @@
  * Check servie worker.
  */
 if (navigator.serviceWorker) {
-  navigator.serviceWorker.register("/ICS2O-Template-PWA/sw.js", {
-    scope: "/ICS2O-Template-PWA/",
+  navigator.serviceWorker.register("/ICS2O-Unit-6-03-JS/sw.js", {
+    scope: "/ICS2O-Unit-6-03-JS/",
   })
 }
 
 /**
- * This function displays an alert.
+ * Get API info.
  */
-function myButtonClicked() {
-  document.getElementById("hello-world").innerHTML = "<p>Hello, World!</p>"
+// code from: https://www.youtube.com/watch?v=670f71LTWpM
+
+const getWeather = async (URLAddress) => {
+  try {
+    let tempInKelvin = 0
+    const result = await fetch(URLAddress)
+    const jsonData = await result.json()
+    console.log(jsonData.weather[0].icon)
+    document.getElementById("hello-world").innerHTML =
+      '<img src="http://openweathermap.org/img/wn/' +
+      jsonData.weather[0].icon +
+      '@2x.png" alt="API image" class="center" width= 20% height 20%' +
+      ">"
+
+    tempInKelvin = jsonData.main.temp
+    console.log(tempInKelvin)
+
+    let tempInCelsius = tempInKelvin - 273.15
+
+    if (jsonData.main.temp != "none") {
+      document.getElementById("current-weather").innerHTML =
+        "<p>Temperature: " + tempInCelsius.toFixed(0) + "°C</p>"
+    } else {
+      document.getElementById("current-weather").innerHTML =
+        "<p>Temperature: unknown</p>"
+    }
+  } catch (err) {
+    console.log(err)
+  }
 }
+
+getWeather(
+  "https://api.openweathermap.org/data/2.5/weather?lat=45.4211435&lon=-75.6900574&appid=fe1d80e1e103cff8c6afd190cad23fa5"
+)
